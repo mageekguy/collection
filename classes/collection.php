@@ -106,6 +106,32 @@ class collection implements \countable, \arrayAccess, definition
 		return $collection;
 	}
 
+	public function delete(callable $condition, $limit = null, callable $notFoundCallback = null)
+	{
+		$collection = new static();
+
+		$deletedElements = 0;
+
+		foreach ($this->elements as $key => $element)
+		{
+			if ($limit !== null && $deletedElements >= $limit || $condition($element, $key) === false)
+			{
+				$collection->add($element, $key);
+			}
+			else
+			{
+				$deletedElements++;
+			}
+		}
+
+		if ($deletedElements === 0 && $notFoundCallback !== null)
+		{
+			$notFoundCallback();
+		}
+
+		return $collection;
+	}
+
 	public function apply(callable $callable)
 	{
 		array_walk($this->elements, $callable);
