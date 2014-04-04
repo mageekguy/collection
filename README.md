@@ -17,7 +17,7 @@ You can also use `array_walk` and `array_filter` but it's not the OOP way.
 With Collection, you can do:
 
 ``` php
-use mageekguy\collection;
+use mageekguy\collection\collection;
 
 (new collection($array))
  	->select(function($element) { return $element->isTheRight(); })
@@ -29,8 +29,8 @@ Moreover, Collection allows you to limit the selection:
 
 ``` php
 $collection = new collection($array);
-$collection->select(function($element) { return $element->isTheRight(); }, 2); // only 2 elements will be selected even if the collection contains more matching elements
-$collection(function($element) use ($something) { $something->doSomethingOn($element); }); // you can apply a callback with this syntaxic sugar.
+$rightElements = $collection->select(function($element) { return $element->isTheRight(); }, 2); // only 2 elements will be selected even if the collection contains more matching elements
+$rightElements(function($element) use ($something) { $something->doSomethingOn($element); }); // you can apply a callback with this syntaxic sugar.
 ```
 
 And at last, you can define a callback if `collection::select()` return an empty collection:
@@ -38,7 +38,14 @@ And at last, you can define a callback if `collection::select()` return an empty
 ``` php
 $collection = new collection($array);
 $collection->select(function($element) { return $element->isTheRight(); }, 2, function() { thow new exception('Unable to find any element matching this condition'); });
-$collection(function($element) use ($something) { $something->doSomethingOn($element); }); // you can apply a callback with this syntaxic sugar.
 ```
 
 Collection supports `arrayAccess` interface, so you can use it as an array.
+
+## How to use it in my project?
+
+Just include the file `bootstrap.php` in your script.
+
+## Warning!
+
+It's a work in progress, any contribution is welcomed.
