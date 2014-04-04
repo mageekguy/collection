@@ -83,8 +83,33 @@ class collection implements \countable, \arrayAccess, definition
 
 	public function select(callable $condition, $limit = null, callable $notFoundCallback = null)
 	{
-		$collection = new static();
+		return $this->doSelect(new static(), $condition, $limit, $notFoundCallback);
+	}
 
+	public function selectIn(callable $condition, $limit = null, callable $notFoundCallback = null)
+	{
+		return $this->doSelect($this, $condition, $limit, $notFoundCallback);
+	}
+
+	public function delete(callable $condition, $limit = null, callable $notFoundCallback = null)
+	{
+		return $this->doDelete(new static, $condition, $limit, $notFoundCallback);
+	}
+
+	public function deleteIn(callable $condition, $limit = null, callable $notFoundCallback = null)
+	{
+		return $this->doDelete($this, $condition, $limit, $notFoundCallback);
+	}
+
+	public function apply(callable $callable)
+	{
+		array_walk($this->elements, $callable);
+
+		return $this;
+	}
+
+	protected function doSelect(self $collection, callable $condition, $limit = null, callable $notFoundCallback = null)
+	{
 		foreach ($this->elements as $key => $element)
 		{
 			if ($condition($element, $key) === true)
@@ -106,10 +131,8 @@ class collection implements \countable, \arrayAccess, definition
 		return $collection;
 	}
 
-	public function delete(callable $condition, $limit = null, callable $notFoundCallback = null)
+	protected function doDelete(self $collection, $condition, $limit, callable $notFoundCallback = null)
 	{
-		$collection = new static();
-
 		$deletedElements = 0;
 
 		foreach ($this->elements as $key => $element)
@@ -120,6 +143,8 @@ class collection implements \countable, \arrayAccess, definition
 			}
 			else
 			{
+				unset($collection[$key]);
+
 				$deletedElements++;
 			}
 		}
@@ -130,19 +155,5 @@ class collection implements \countable, \arrayAccess, definition
 		}
 
 		return $collection;
-	}
-
-	public function deleteIn(callable $condition, $limit = null, callable $notFoundCallback = null)
-	{
-		$this->elements = $this->delete($condition, $limit, $notFoundCallback)->elements;
-
-		return $this;
-	}
-
-	public function apply(callable $callable)
-	{
-		array_walk($this->elements, $callable);
-
-		return $this;
 	}
 }
