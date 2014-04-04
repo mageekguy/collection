@@ -265,7 +265,7 @@ class collection extends atoum
 				->object($this->testedInstance->delete(function() {}))
 					->isEqualTo($this->testedInstance)
 
-			->if($this->testedInstance->fillWithArray([ $value1 = uniqid(), $value2 = uniqid(), $value3 = uniqid() ]))
+			->if($this->testedInstance->fillWithArray([ $value1 = '1', $value2 = '2', $value3 = '3' ]))
 			->then
 				->object($this->testedInstance->delete(function($element) use ($value2) { return $element == $value2; }))
 					->isEqualTo($this->newInstance->fillWithArray([ 0 => $value1, 2 => $value3 ]))
@@ -281,6 +281,34 @@ class collection extends atoum
 				->object($this->testedInstance->delete(function($element) { return $element > 5; }, 2, function() use (& $flag) { $flag = true; }))
 					->isEqualTo($this->newInstance->fillWithArray([ 1, 2, 3, 4, 5 ]))
 					->boolean($flag)->isTrue
+		;
+	}
+
+	public function testDeleteIn()
+	{
+		$this
+			->given($this->newTestedInstance)
+			->then
+				->object($this->testedInstance->deleteIn(function() {}))->isTestedInstance
+
+			->if($this->testedInstance->fillWithArray([ $value1 = uniqid(), $value2 = uniqid(), $value3 = uniqid() ]))
+			->then
+				->object($this->testedInstance->deleteIn(function($element) use ($value2) { return $element == $value2; }))->isTestedInstance
+				->array($this->testedInstance->toArray())->isEqualTo([ 0 => $value1, 2 => $value3 ])
+
+			->if($this->testedInstance->fillWithArray([ $value1 = '1', $value2 = '2', $value3 = '3' ]))
+			->then
+				->object($this->testedInstance->deleteIn(function($element, $key) { return $key == 2; }))->isTestedInstance
+				->array($this->testedInstance->toArray())->isEqualTo([ $value1, $value2 ])
+
+			->if($this->testedInstance->fillWithArray([ 1, 2, 3, 4, 5 ]))
+			->then
+				->object($this->testedInstance->deleteIn(function($element) { return $element > 2; }, 2))->isTestedInstance
+				->array($this->testedInstance->toArray())->isEqualTo([ 0 => 1, 1 => 2, 4 => 5 ])
+
+				->object($this->testedInstance->deleteIn(function($element) { return $element > 5; }, 2, function() use (& $flag) { $flag = true; }))->isTestedInstance
+				->array($this->testedInstance->toArray())->isEqualTo([ 0 => 1, 1 => 2, 4 => 5 ])
+				->boolean($flag)->isTrue
 		;
 	}
 

@@ -132,6 +132,13 @@ class collection implements \countable, \arrayAccess, definition
 		return $collection;
 	}
 
+	public function deleteIn(callable $condition, $limit = null, callable $notFoundCallback = null)
+	{
+		$this->elements = $this->delete($condition, $limit, $notFoundCallback)->elements;
+
+		return $this;
+	}
+
 	public function apply(callable $callable)
 	{
 		array_walk($this->elements, $callable);
