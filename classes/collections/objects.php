@@ -15,8 +15,13 @@ class objects extends collection\collection
 			throw new objects\exception('Collection should contains only object');
 		}
 
-		$this->deleteIn(function($object) use ($element) { return $element === $object; });
+		$this->select(function($object) use ($element) { return $element === $object; }, null, function() use ($element) { $this->addParent($element); });
 
+		return $this;
+	}
+
+	private function addParent($element, $key = null)
+	{
 		return parent::add($element, $key);
 	}
 }
