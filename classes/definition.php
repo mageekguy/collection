@@ -4,7 +4,6 @@ namespace mageekguy\collection;
 
 interface definition
 {
-	public function __construct();
 	public function __invoke(callable $callback);
 	public function fillWith(definition $collection);
 	public function fillWithArray(array $array);
