@@ -236,7 +236,7 @@ class collection extends atoum
 			->given($this->newTestedInstance)
 			->then
 				->object($this->testedInstance->select(function() {}))
-					->isEqualTo($this->testedInstance)
+					->isEqualTo($this->newInstance)
 
 			->if($this->testedInstance->fillWithArray([ $value1 = uniqid(), $value2 = uniqid(), $value3 = uniqid() ]))
 			->then
