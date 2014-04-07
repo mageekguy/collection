@@ -88,7 +88,7 @@ class collection implements \countable, \arrayAccess, definition
 
 	public function selectIn(callable $condition, $limit = null, callable $notFoundCallback = null)
 	{
-		return $this->doSelect($this, $condition, $limit, $notFoundCallback);
+		return $this->doSelect(clone $this, $condition, $limit, $notFoundCallback);
 	}
 
 	public function delete(callable $condition, $limit = null, callable $notFoundCallback = null)
@@ -110,6 +110,8 @@ class collection implements \countable, \arrayAccess, definition
 
 	protected function doSelect(self $collection, callable $condition, $limit = null, callable $notFoundCallback = null)
 	{
+		$this->reset();
+
 		foreach ($collection->elements as $key => $element)
 		{
 			if ($condition($element, $key) === true)

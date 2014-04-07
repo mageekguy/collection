@@ -257,6 +257,38 @@ class collection extends atoum
 		;
 	}
 
+	public function testSelectIn()
+	{
+		$this
+			->given($this->newTestedInstance)
+			->then
+				->object($this->testedInstance->selectIn(function() {}))
+					->isTestedInstance
+					->array($this->testedInstance->toArray())->isEmpty
+
+			->if($this->testedInstance->fillWithArray([ $value1 = uniqid(), $value2 = uniqid(), $value3 = uniqid() ]))
+			->then
+				->object($this->testedInstance->selectIn(function($element) use ($value2) { return $element == $value2; }))
+					->isTestedInstance
+					->array($this->testedInstance->toArray())->isEqualTo([ 1 => $value2 ])
+
+			->if($this->testedInstance->fillWithArray([ $value1 = uniqid(), $value2 = uniqid(), $value3 = uniqid() ]))
+				->object($this->testedInstance->selectIn(function($element, $key) { return $key == 2; }))
+					->isTestedInstance
+					->array($this->testedInstance->toArray())->isEqualTo([ 2 => $value3 ])
+
+			->if($this->testedInstance->fillWithArray([ 1, 2, 3, 4, 5 ]))
+			->then
+				->object($this->testedInstance->selectIn(function($element) { return $element > 2; }, 2))
+					->isTestedInstance
+					->array($this->testedInstance->toArray())->isEqualTo([ 2 => 3, 3 => 4 ])
+
+				->object($this->testedInstance->selectIn(function($element) { return $element > 5; }, 2, function() use (& $flag) { $flag = true; }))
+					->isTestedInstance
+					->array($this->testedInstance->toArray())->isEmpty
+		;
+	}
+
 	public function testDelete()
 	{
 		$this
