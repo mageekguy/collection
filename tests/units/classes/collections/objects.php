@@ -18,7 +18,7 @@ class objects extends atoum
 	public function testAdd()
 	{
 		$this
-			->given($this->newTestedInstance())
+			->given($this->newTestedInstance)
 			->then
 				->object($this->testedInstance->add($object1 = new \stdClass()))->isTestedInstance
 				->array($this->testedInstance->toArray())->isEqualTo([ $object1 ])
@@ -36,5 +36,9 @@ class objects extends atoum
 					->isInstanceOf('mageekguy\collection\collections\objects\exception')
 					->hasMessage('Collection should contains only object')
 		;
+	}
+
+	public function testSelectInstance()
+	{
 	}
 }
