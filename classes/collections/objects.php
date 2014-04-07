@@ -15,13 +15,13 @@ class objects extends collection\collection
 			throw new objects\exception('Collection should contains only object');
 		}
 
-		$this->select(function($object) use ($element) { return $element === $object; }, null, function() use ($element) { $this->addParent($element); });
+		$this->select(function($object) use ($element) { return $element === $object; }, null, function() use ($element, $key) { parent::add($element, $key); });
 
 		return $this;
 	}
 
-	private function addParent($element, $key = null)
+	public function selectInstance($instance, callable $notFoundCallback = null)
 	{
-		return parent::add($element, $key);
+		return $this->doSelect(new static(), function($object) use ($instance) { return $object === $instance; }, null, $notFoundCallback);
 	}
 }
