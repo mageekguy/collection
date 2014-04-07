@@ -83,7 +83,7 @@ class collection implements \countable, \arrayAccess, definition
 
 	public function select(callable $condition, $limit = null, callable $notFoundCallback = null)
 	{
-		return $this->doSelect(new static(), $condition, $limit, $notFoundCallback);
+		return $this->doSelect(null, $condition, $limit, $notFoundCallback);
 	}
 
 	public function selectIn(callable $condition, $limit = null, callable $notFoundCallback = null)
@@ -93,7 +93,7 @@ class collection implements \countable, \arrayAccess, definition
 
 	public function delete(callable $condition, $limit = null, callable $notFoundCallback = null)
 	{
-		return $this->doDelete(new static, $condition, $limit, $notFoundCallback);
+		return $this->doDelete(null, $condition, $limit, $notFoundCallback);
 	}
 
 	public function deleteIn(callable $condition, $limit = null, callable $notFoundCallback = null)
@@ -108,8 +108,13 @@ class collection implements \countable, \arrayAccess, definition
 		return $this;
 	}
 
-	protected function doSelect(self $collection, callable $condition, $limit = null, callable $notFoundCallback = null)
+	protected function doSelect(self $collection = null, callable $condition, $limit = null, callable $notFoundCallback = null)
 	{
+		if ($collection === null)
+		{
+			$collection = new static();
+		}
+
 		foreach ($this->elements as $key => $element)
 		{
 			if ($condition($element, $key) === true)
@@ -131,8 +136,13 @@ class collection implements \countable, \arrayAccess, definition
 		return $collection;
 	}
 
-	protected function doDelete(self $collection, $condition, $limit, callable $notFoundCallback = null)
+	protected function doDelete(self $collection = null, callable $condition, $limit = null, callable $notFoundCallback = null)
 	{
+		if ($collection === null)
+		{
+			$collection = new static();
+		}
+
 		$deletedElements = 0;
 
 		foreach ($this->elements as $key => $element)

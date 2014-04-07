@@ -2,6 +2,10 @@
 
 namespace mageekguy\collection\collections;
 
+use
+	mageekguy\collection
+;
+
 class instances extends objects
 {
 	private $class = '';
@@ -23,13 +27,13 @@ class instances extends objects
 		return parent::add($element, $key);
 	}
 
-	public function select(callable $condition, $limit = null, callable $notFoundCallback = null)
+	protected function doSelect(collection\collection $collection = null, callable $condition, $limit = null, callable $notFoundCallback = null)
 	{
-		return $this->doSelect(new static($this->class), $condition, $limit, $notFoundCallback);
+		return parent::doSelect($collection ?: new static($this->class), $condition, $limit, $notFoundCallback);
 	}
 
-	public function delete(callable $condition, $limit = null, callable $notFoundCallback = null)
+	protected function doDelete(collection\collection $collection = null, callable $condition, $limit = null, callable $notFoundCallback = null)
 	{
-		return $this->doDelete(new static($this->class), $condition, $limit, $notFoundCallback);
+		return parent::doDelete($collection ?: new static($this->class), $condition, $limit, $notFoundCallback);
 	}
 }

@@ -22,6 +22,6 @@ class objects extends collection\collection
 
 	public function selectInstance($instance, callable $notFoundCallback = null)
 	{
-		return $this->doSelect(new static(), function($object) use ($instance) { return $object === $instance; }, null, $notFoundCallback);
+		return $this->doSelect(null, function($object) use ($instance) { return $object === $instance; }, null, $notFoundCallback);
 	}
 }
