@@ -83,7 +83,7 @@ class collection implements \countable, \arrayAccess, definition
 
 	public function select(callable $condition, $limit = null, callable $notFoundCallback = null)
 	{
-		return $this->doSelect(null, $condition, $limit, $notFoundCallback);
+		return (new static())->doSelect($this, $condition, $limit, $notFoundCallback);
 	}
 
 	public function selectIn(callable $condition, $limit = null, callable $notFoundCallback = null)
@@ -93,7 +93,7 @@ class collection implements \countable, \arrayAccess, definition
 
 	public function delete(callable $condition, $limit = null, callable $notFoundCallback = null)
 	{
-		return $this->doDelete(null, $condition, $limit, $notFoundCallback);
+		return (new static())->doDelete($this, $condition, $limit, $notFoundCallback);
 	}
 
 	public function deleteIn(callable $condition, $limit = null, callable $notFoundCallback = null)
@@ -108,18 +108,13 @@ class collection implements \countable, \arrayAccess, definition
 		return $this;
 	}
 
-	protected function doSelect(self $collection = null, callable $condition, $limit = null, callable $notFoundCallback = null)
+	protected function doSelect(self $collection, callable $condition, $limit = null, callable $notFoundCallback = null)
 	{
-		if ($collection === null)
-		{
-			$collection = new static();
-		}
-
-		foreach ($this->elements as $key => $element)
+		foreach ($collection->elements as $key => $element)
 		{
 			if ($condition($element, $key) === true)
 			{
-				$collection->add($element, $key);
+				$this->add($element, $key);
 
 				if ($limit !== null && --$limit <= 0)
 				{
@@ -128,32 +123,27 @@ class collection implements \countable, \arrayAccess, definition
 			}
 		}
 
-		if ($notFoundCallback !== null && sizeof($collection) <= 0)
+		if ($notFoundCallback !== null && sizeof($this) <= 0)
 		{
 			$notFoundCallback();
 		}
 
-		return $collection;
+		return $this;
 	}
 
-	protected function doDelete(self $collection = null, callable $condition, $limit = null, callable $notFoundCallback = null)
+	protected function doDelete(self $collection, callable $condition, $limit = null, callable $notFoundCallback = null)
 	{
-		if ($collection === null)
-		{
-			$collection = new static();
-		}
-
 		$deletedElements = 0;
 
-		foreach ($this->elements as $key => $element)
+		foreach ($collection->elements as $key => $element)
 		{
 			if ($limit !== null && $deletedElements >= $limit || $condition($element, $key) === false)
 			{
-				$collection->add($element, $key);
+				$this->add($element, $key);
 			}
 			else
 			{
-				unset($collection[$key]);
+				unset($this[$key]);
 
 				$deletedElements++;
 			}
@@ -164,6 +154,6 @@ class collection implements \countable, \arrayAccess, definition
 			$notFoundCallback();
 		}
 
-		return $collection;
+		return $this;
 	}
 }

@@ -27,13 +27,13 @@ class instances extends objects
 		return parent::add($element, $key);
 	}
 
-	protected function doSelect(collection\collection $collection = null, callable $condition, $limit = null, callable $notFoundCallback = null)
+	public function select(callable $condition, $limit = null, callable $notFoundCallback = null)
 	{
-		return parent::doSelect($collection ?: new static($this->class), $condition, $limit, $notFoundCallback);
+		return (new static($this->class))->doSelect($this, $condition, $limit, $notFoundCallback);
 	}
 
-	protected function doDelete(collection\collection $collection = null, callable $condition, $limit = null, callable $notFoundCallback = null)
+	public function delete(callable $condition, $limit = null, callable $notFoundCallback = null)
 	{
-		return parent::doDelete($collection ?: new static($this->class), $condition, $limit, $notFoundCallback);
+		return (new static($this->class))->doDelete($this, $condition, $limit, $notFoundCallback);
 	}
 }
